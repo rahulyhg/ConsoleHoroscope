@@ -7,6 +7,8 @@ A Java-based Console Application that asks for some prior details which then use
 java ConsoleHoroscope
 ```
 The user will be asked for two pieces of information: their date of birth (dd/mm) and their choice of horoscope (either from daily, weekly, monthly and annual types).
+<br />
+<br />
 ### Example Input and Ouput ###
 ```
 Date of birth: 29/01, Horoscope Type: Yearly
