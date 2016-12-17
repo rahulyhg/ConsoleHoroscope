@@ -3,6 +3,7 @@ import java.text.*;
 import java.io.*;
 import java.net.*;
 import java.nio.*;
+import org.json.*;
 
 class ConsoleHoroscope {
 
@@ -18,7 +19,7 @@ class ConsoleHoroscope {
     try {
       resultDate = sdf.parse(aDate);
     } catch(ParseException e) {
-      System.out.println("Bad input.");
+      System.out.println("Bad date input.");
       System.exit(0);
     }
     return resultDate;
@@ -54,7 +55,7 @@ class ConsoleHoroscope {
     try {
       result = br.readLine();
     } catch(IOException e) {
-      System.out.println("Bad input.");
+      System.out.println("Bad input for details.");
       System.exit(0);
     }
     return result;
@@ -74,7 +75,7 @@ class ConsoleHoroscope {
       }
       br.close();
     } catch(IOException e) {
-      System.out.println("Bad IO.");
+      System.out.println("Bad Population File.");
     }
   }
 
@@ -101,25 +102,34 @@ class ConsoleHoroscope {
     return sb.toString();
   }
 
+  /*public static void stringToJSON(String aStringObject) {
+    try {
+      JSONArray jArray = new JSONArray(aStringObject);
+      //String horoscope = json.getString("horoscope");
+      //System.out.println(horoscope);
+    } catch(JSONException e) {
+      System.out.println("Could not handle JSON.");
+    }
+  }*/
+
   public static void getHoroscope(String horoscopeSignature, String horoscopeType) {
-    String link = "http://horoscope-api.herokuapp.com/horoscope/" + horoscopeSignature + "/" + horoscopeType;
+    String link = "http://horoscope-api.herokuapp.com/horoscope/" + horoscopeType.toLowerCase() + "/" + horoscopeSignature.toLowerCase();
     try {
       InputStream is = new URL(link).openStream();
       BufferedReader br = new BufferedReader(new InputStreamReader(is));
       String response = readAll(br);
       System.out.println(response);
     } catch(IOException e) {
-      System.out.println("Bad IO.");
+      System.out.println("Bad URL.");
       return;
     }
   }
 
   public static void main(String[] args) {
     populateHoroscopeList();
-    String dateOfBirth = askForDetail("Please enter a birth date: (dd/mm): ");
-    String horoscopeType = askForDetail("Would you like a daily, weekly, monthly or yearly horoscope: ");
-    String horoscopeSignature = findHoroscope(stringToDate(dateOfBirth), horoscopeList);
-    String horoscopeSelected = String.valueOf(stringToEnum(horoscopeType));
-    getHoroscope(horoscopeSignature, horoscopeSelected);
+    getHoroscope(
+      findHoroscope(stringToDate(askForDetail("Please enter a birth date: (dd/mm): ")), horoscopeList),
+      String.valueOf(stringToEnum(askForDetail("Would you like a daily, weekly, monthly or yearly horoscope: ")))
+    );
   }
 }
